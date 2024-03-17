@@ -2,10 +2,10 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="p"
-                 name="PCAR"
-                 start-page="PUP.md">
+<instance-profile id="f"
+                 name="FLASH"
+                 start-page="flash.md">
 
+    <toc-element topic="flash.md"/>
     <toc-element topic="CTB-Integration-as-part-of-FLASH.md"/>
-    <toc-element topic="PUP.md"/>
 </instance-profile>
