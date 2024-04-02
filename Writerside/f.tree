@@ -7,5 +7,4 @@
                  start-page="flash.md">
 
     <toc-element topic="flash.md"/>
-    <toc-element topic="CTB-Integration-as-part-of-FLASH.md"/>
 </instance-profile>

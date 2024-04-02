@@ -2,10 +2,9 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="p"
-                 name="PUP"
-                 start-page="PUP.md">
+<instance-profile id="autogen"
+                 name="CTT_AUTOGEN"
+                 start-page="ctt-autogen.md">
 
-    <toc-element topic="PUP.md"/>
-    <toc-element topic="interviewQ.md"/>
+    <toc-element topic="ctt-autogen.md"/>
 </instance-profile>

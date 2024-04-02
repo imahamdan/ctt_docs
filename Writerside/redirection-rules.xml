@@ -10,4 +10,16 @@
         <description>Created after removal of "About PCAR" from PCAR</description>
         <accepts>starter-topic.html</accepts>
     </rule>
+    <rule id="8d082f4">
+        <description>Created after removal of "PUP" from FLASH</description>
+        <accepts>PUP.html</accepts>
+    </rule>
+    <rule id="9aae680">
+        <description>Created after removal of "CTB Integration as part of FLASH" from PCAR</description>
+        <accepts>CTB-Integration-as-part-of-FLASH.html</accepts>
+    </rule>
+    <rule id="72ddaf33">
+        <description>Created after removal of "CTB Integration as part of FLASH" from FLASH</description>
+        <accepts>CTB-Integration-as-part-of-FLASH.html</accepts>
+    </rule>
 </rules>

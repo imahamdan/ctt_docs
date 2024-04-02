@@ -1,0 +1,70 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-colors-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2024-03-17T12:08:21.3958733"><title>PUP | FLASH</title><script type="application/json" id="virtual-toc-data">[{"id":"motivation","level":0,"title":"Motivation","anchor":"#motivation"},{"id":"introduction","level":0,"title":"Introduction","anchor":"#introduction"},{"id":"spec-file-main-elements","level":0,"title":"Spec File Main Elements","anchor":"#spec-file-main-elements"},{"id":"example-of-a-spec-file","level":0,"title":"Example of a Spec File","anchor":"#example-of-a-spec-file"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.6.6-b205/app.css" rel="stylesheet"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><link rel="manifest" href="site.webmanifest"><meta name="msapplication-TileColor" content="#000000"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="PUP | FLASH"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="FLASH Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="/f/1.0/pup.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="PUP | FLASH"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "/f/1.0/pup.html#webpage",
+    "url": "/f/1.0/pup.html",
+    "name": "PUP | FLASH",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "/f/#website",
+    "url": "/f/",
+    "name": "FLASH Help"
+}</script><!-- End Schema.org --></head><body data-id="PUP" data-main-title="PUP" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs=""><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>FLASH 1.0 Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="PUP" id="PUP.md">PUP</h1><section class="chapter"><h2 id="motivation" data-toc="motivation">Motivation</h2><p id="73f7128_38">A spec file that describes the structure of a bundle, it's ingrediants and extra metadata required for CTT-Service swapping the plist on the fly based on PUP prediction as well as a contract between CTT &amp; PUP.</p></section><section class="chapter"><h2 id="introduction" data-toc="introduction">Introduction</h2><p id="73f7128_39">TBD</p><section class="chapter"><h3 id="prediction-key" data-toc="prediction-key">Prediction Key</h3><p id="73f7128_40">each resource in a bundle can get one of the possible predecitions: None: Not targeted by PUP --&gt; will be marked by &quot;L&quot; Monitor: a mode used for PUP for prediction validation --&gt; will be marked by &quot;L&quot; Short: a mode that indicate a good health and the short list can be used --&gt; will be makred by &quot;S&quot;</p></section></section><section class="chapter"><h2 id="spec-file-main-elements" data-toc="spec-file-main-elements">Spec File Main Elements</h2><ol class="list _decimal" id="73f7128_41" type="1"><li class="list__item" id="73f7128_42"><p>Bundle ID: bundle Name and metadata required for humans and tools.</p></li><li class="list__item" id="73f7128_43"><p>Bundle Structure: includes the resources and the bundles lists.</p></li><li class="list__item" id="73f7128_44"><p>Bundle Permutations: a mapping from PredictionKey</p></li></ol><section class="chapter"><h3 id="bundlename" data-toc="bundlename">BundleName</h3><p id="73f7128_45">BundleName, associated plist and hosting instance share the same naming structure.</p><p id="73f7128_46">MCTT _ [TAG] _ [BUNDLEALIAS] _ [CTFFREQ]</p><p id="73f7128_47">example: mctt_0p0_b17_400</p></section></section><section class="chapter"><h2 id="example-of-a-spec-file" data-toc="example-of-a-spec-file">Example of a Spec File</h2><div class="code-block" data-lang="json">
+{
+  &quot;name&quot;: &quot;mctt_0p0_b17_400&quot;,
+  &quot;metadata&quot;: {
+    &quot;ctf&quot;: 400,
+    &quot;tap&quot;: 100,
+    &quot;tag&quot;: &quot;0p0&quot;,
+    &quot;alias&quot;: &quot;b17&quot;
+  },
+  &quot;structure&quot;: [
+    {
+      &quot;resourceName&quot;: &quot;GT&quot;,
+      &quot;plistName&quot;: &quot;mctt_0p0_b17_400_gt_plist&quot;,
+      &quot;index&quot;: 0,
+      &quot;metadata&quot;: {
+        &quot;baseNumber&quot;: &quot;20103&quot;
+      },
+      &quot;items&quot;: [
+        {
+          &quot;plistName&quot;: &quot;scn_gt_chk_f1_ca2_dito_noram_render&quot;
+        },
+        {
+          &quot;plistName&quot;: &quot;scn_gt_chk_f1_ca2_dito_sec_render&quot;
+        },
+        {
+          &quot;plistName&quot;: &quot;scn_gt_chk_f1_ca2_dito_ramonly_render&quot;
+        },
+        {
+          &quot;plistName&quot;: &quot;scn_gt_chk_f1_ca1_dito_sec_render&quot;
+        }
+      ]
+    },
+    {
+      &quot;resourceName&quot;: &quot;CCF&quot;,
+      &quot;index&quot;: 1,
+      &quot;plistName&quot;: &quot;mctt_0p0_b17_400_ccf_plist&quot;,
+      &quot;metadata&quot;: {
+        &quot;baseNumber&quot;: &quot;31014&quot;
+      },
+      &quot;items&quot;: [
+        {
+          &quot;plistName&quot;: &quot;ring_ssa_CHKRING_F01_ks_tito_cbo_mbistgroup_list&quot;
+        }
+      ]
+    }
+  ],
+  &quot;permutations&quot;: {
+    &quot;SS&quot;: &quot;mctt_0p0_b17_400_ss_plist&quot;,
+    &quot;SL&quot;: &quot;mctt_0p0_b17_400_sl_plist&quot;,
+    &quot;LS&quot;: &quot;mctt_0p0_b17_400_ll_plist&quot;,
+    &quot;LL&quot;: &quot;mctt_0p0_b17_400_ll_plist&quot;
+  },
+}
+
+</div></section><div class="last-modified">Last modified: 17 March 2024</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="ctb-integration-as-part-of-flash.html" class="navigation-links__prev">CTB Integration as part of FLASH</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.6.6-b205/app.js"></script></body></html>

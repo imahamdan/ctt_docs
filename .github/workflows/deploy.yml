@@ -1,0 +1,54 @@
+name: Build documentation
+
+on:
+  # Specify to run a workflow manually from the Actions tab on GitHub
+  workflow_dispatch:
+#
+#  push:
+#    # To trigger the workflow once you push to the `main` branch
+#    # Replace `main` with your branch’s name
+#    branches: ["main"]
+
+permissions:
+  id-token: write
+  pages: write
+  contents: read
+
+env:
+  # Name of module and id separated by a slash
+  INSTANCE: Writerside/f
+  # Replace XX with the ID of the instance in capital letters
+  ARTIFACT: webHelpF2-all.zip
+  # Docker image version
+  DOCKER_VERSION: 232.10275
+
+jobs:
+  upload:
+    permissions:
+      id-token: write
+      pages: write
+      contents: read
+    runs-on: self-hosted
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Unzip artifact
+        run: unzip docs/${{ env.ARTIFACT }} -d dir
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'dir'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

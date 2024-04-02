@@ -1,0 +1,51 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-colors-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2024-03-17T12:08:21.3958733"><title>CTB Integration as part of FLASH | FLASH</title><script type="application/json" id="virtual-toc-data">[{"id":"introduction","level":0,"title":"Introduction","anchor":"#introduction"},{"id":"pre-requisite","level":0,"title":"Pre Requisite","anchor":"#pre-requisite"},{"id":"flow-diagram","level":0,"title":"Flow Diagram","anchor":"#flow-diagram"},{"id":"ctb-integration-in-details","level":0,"title":"CTB integration in details","anchor":"#ctb-integration-in-details"},{"id":"inputs","level":0,"title":"Inputs","anchor":"#inputs"},{"id":"outputs","level":0,"title":"Outputs","anchor":"#outputs"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.6.6-b205/app.css" rel="stylesheet"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><link rel="manifest" href="site.webmanifest"><meta name="msapplication-TileColor" content="#000000"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="CTB Integration as part of FLASH | FLASH"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="FLASH Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="/f/1.0/ctb-integration-as-part-of-flash.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="CTB Integration as part of FLASH | FLASH"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "/f/1.0/ctb-integration-as-part-of-flash.html#webpage",
+    "url": "/f/1.0/ctb-integration-as-part-of-flash.html",
+    "name": "CTB Integration as part of FLASH | FLASH",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "/f/#website",
+    "url": "/f/",
+    "name": "FLASH Help"
+}</script><!-- End Schema.org --></head><body data-id="CTB-Integration-as-part-of-FLASH" data-main-title="CTB Integration as part of FLASH" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs=""><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>FLASH 1.0 Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="CTB-Integration-as-part-of-FLASH" id="CTB-Integration-as-part-of-FLASH.md">CTB Integration as part of FLASH</h1><p id="3307b7ed_3319">at this document we will define how CTB will be integrated as part of FLASH TRACE CONVERSION FLOW</p><section class="chapter"><h2 id="introduction" data-toc="introduction">Introduction</h2><p id="3307b7ed_3320">to scale CTT and natevly creating atomic patterns for all content type, integrating CTB as part of trace convert flow &amp; TRC2ATE is the best approach. to accomplish this, CTB tool need to be integrated and called as part of each TRC2ATE call.</p></section><section class="chapter"><h2 id="pre-requisite" data-toc="pre-requisite">Pre Requisite</h2><p id="3307b7ed_3321">users must have access to CTB CRT releases area Group Permissions: soc</p></section><section class="chapter"><h2 id="flow-diagram" data-toc="flow-diagram">Flow Diagram</h2><p id="3307b7ed_3322">CTB will be integrated at the pattern conversion tools and will handle all the traces regardless of the trace-generated flow (iTraceMgr,FlashScan, other..)</p><p id="3307b7ed_3323">![high level flow.png](high level flow.png)</p></section><section class="chapter"><h2 id="ctb-integration-in-details" data-toc="ctb-integration-in-details">CTB integration in details</h2><div class="code-block" data-lang="bash">
+ctb-wrapper mark --cfg [CFG_FILE JSON] --stil [STIL] --metadata [METADATA JSON] --rundir [RUNDIR] --result_name [ctb_mark_result.json]
+</div></section><section class="chapter"><h2 id="inputs" data-toc="inputs">Inputs</h2><section class="chapter"><h3 id="cfg-file" data-toc="cfg-file">CFG File</h3><p id="3307b7ed_3325">the configuration file will include all parameters required for CTB to be executed, as follows:</p><div class="code-block" data-lang="json">
+{
+ &quot;product&quot; : &quot;LNL&quot;,
+ &quot;step&quot;    : &quot;B0&quot;,
+ &quot;version_override&quot; : null
+}
+</div></section><section class="chapter"><h3 id="stil" data-toc="stil">STIL</h3><p id="3307b7ed_3327">full path to the stil/itpp file to be marked</p></section><section class="chapter"><h3 id="metadata-file" data-toc="metadata-file">METADATA File</h3><p id="3307b7ed_3328">the metadata file will contain the pattern name dissassemble information in both bit &amp; full value</p><div class="code-block" data-lang="json">
+{
+  &quot;naming_metadata&quot;: {
+    &quot;namefield1&quot;: {
+      &quot;bit&quot;: &quot;bit_value&quot;,
+      &quot;full&quot;: &quot;full_value&quot;
+    },
+    &quot;namefield2&quot;: {
+      &quot;bit&quot;: &quot;bit_value2&quot;,
+      &quot;full&quot;: &quot;full_value2&quot;
+    }
+  }
+}
+</div></section><section class="chapter"><h3 id="rundir" data-toc="rundir">RUNDIR</h3><p id="3307b7ed_3330">full path to a folder where CTB can create logs and other files required for the transformation</p></section><section class="chapter"><h3 id="result-name" data-toc="result-name">Result Name</h3><p id="3307b7ed_3331">the name of the file that will hold the result information of the marking - default: ctb_mark_result.json the file will be located at the supplied RUNDIR (e.g. RUNDIR/ctb_mark_result.json)</p></section></section><section class="chapter"><h2 id="outputs" data-toc="outputs">Outputs</h2><p id="3307b7ed_3332">CTB will create a JSON file that contains full path to the marked STIL, exit-status and error message incase of any issue</p><p id="3307b7ed_3333">Exit Codes:</p><div class="table-wrapper"><table class="wide" id="3307b7ed_3334"><thead><tr class="ijRowHead" id="3307b7ed_3335"><th id="3307b7ed_3336"><p>Exit Code</p></th><th id="3307b7ed_3337"><p>Description</p></th></tr></thead><tbody><tr id="3307b7ed_3338"><td id="3307b7ed_3339"><p>0</p></td><td id="3307b7ed_3340"><p>SUCCESS</p></td></tr><tr id="3307b7ed_3341"><td id="3307b7ed_3342"><p>Other</p></td><td id="3307b7ed_3343"><p>FAILURE</p></td></tr></tbody></table></div><p id="3307b7ed_3344">Output Json structure:</p><p id="3307b7ed_3345"><span class="control" id="3307b7ed_3346">in-case of success run:</span></p><div class="code-block" data-lang="json">
+{
+  &quot;preMarkInputFile&quot;: &quot;FULL_PATH_TO_INPUT_FILE&quot;,
+  &quot;postMarkInputFile&quot;: &quot;FULL_PATH_TO_OUTPUT_FILE&quot;,
+  &quot;exitStatus&quot; : 0,
+  &quot;errorMessage&quot; : null
+}
+</div><p id="3307b7ed_3348"><span class="control" id="3307b7ed_3349">in-case of failure run:</span></p><div class="code-block" data-lang="json">
+{
+  &quot;preMarkInputFile&quot;: &quot;FULL_PATH_TO_INPUT_FILE&quot;,
+  &quot;postMarkInputFile&quot;: null,
+  &quot;exitStatus&quot; : &quot;4&quot;,
+  &quot;errorMessage&quot; : &quot;Failed to find a marker script to handle the input stimulus&quot;
+}
+</div></section><div class="last-modified">Last modified: 17 March 2024</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="flash.html" class="navigation-links__prev">About FLASH</a><a href="pup.html" class="navigation-links__next">PUP</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.6.6-b205/app.js"></script></body></html>
