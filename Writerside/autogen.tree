@@ -4,7 +4,10 @@
 
 <instance-profile id="autogen"
                  name="CTT_AUTOGEN"
-                 start-page="ctt-autogen.md">
+                 start-page="ctt-vision.md">
 
-    <toc-element topic="ctt-autogen.md"/>
+<!--    <toc-element topic="ctt-autogen.md"/>-->
+    <toc-element topic="ConvergedVminSearch.md"/>
+    <toc-element topic="VminSearchReq.md"/>
+    <toc-element topic="ctt-vision.md"/>
 </instance-profile>

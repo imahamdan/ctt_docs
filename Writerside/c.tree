@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="c"
+                 name="ConvergedVminSearch"
+                 start-page="convergedvminsearch-1.md">
+
+    <toc-element topic="convergedvminsearch-1.md"/>
+    <toc-element topic="Design.md"/>
+    <toc-element topic="Jsons.md"/>
+</instance-profile>

@@ -31,7 +31,7 @@ the configuration file will include all parameters required for CTB to be execut
   "step": "B0",
   "tag" : null,
   "version_override": null,
-  "custom_marker": "MARKER_ALIAS_NAME", 
+  "custom_marker": "MARKER_ALIA S_NAME", 
   "backdoor1": "value1"
 }
 ```

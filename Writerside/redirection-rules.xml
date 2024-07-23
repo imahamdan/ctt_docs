@@ -22,4 +22,12 @@
         <description>Created after removal of "CTB Integration as part of FLASH" from FLASH</description>
         <accepts>CTB-Integration-as-part-of-FLASH.html</accepts>
     </rule>
+    <rule id="2490a418">
+        <description>Created after removal of "interviewQ" from PUP</description>
+        <accepts>interviewQ.html</accepts>
+    </rule>
+    <rule id="7a2c3284">
+        <description>Created after removal of "Examples" from CTT_AUTOGEN</description>
+        <accepts>Examples.html</accepts>
+    </rule>
 </rules>

@@ -2,9 +2,9 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="p"
-                 name="PUP"
-                 start-page="PUP.md">
+<instance-profile id="s"
+                 name="SANDBOX"
+                 start-page="sandbox.md">
 
-    <toc-element topic="PUP.md"/>
+    <toc-element topic="sandbox.md"/>
 </instance-profile>

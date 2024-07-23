@@ -2,9 +2,9 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="p"
-                 name="PUP"
-                 start-page="PUP.md">
+<instance-profile id="tcf"
+                 name="TOS CTT FEATURES"
+                 start-page="tos-ctt-features.md">
 
-    <toc-element topic="PUP.md"/>
+    <toc-element topic="tos-ctt-features.md"/>
 </instance-profile>

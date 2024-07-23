@@ -7,4 +7,5 @@
                  start-page="flash.md">
 
     <toc-element topic="flash.md"/>
+    <toc-element topic="Contracts-Landing-PAge.topic"/>
 </instance-profile>
