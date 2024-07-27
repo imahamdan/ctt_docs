@@ -7,4 +7,5 @@
                  start-page="sandbox.md">
 
     <toc-element topic="sandbox.md"/>
+    <toc-element topic="Uploaders.md"/>
 </instance-profile>

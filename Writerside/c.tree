@@ -7,6 +7,23 @@
                  start-page="convergedvminsearch-1.md">
 
     <toc-element topic="convergedvminsearch-1.md"/>
-    <toc-element topic="Design.md"/>
-    <toc-element topic="Jsons.md"/>
+    <toc-element topic="Converged-Vmin-Search.md"/>
+    <toc-element topic="Design.md">
+        <toc-element topic="DirectorToVoltageService.md"/>
+        <toc-element topic="DecodersMgr.md"/>
+    </toc-element>
+    <toc-element topic="Jsons.md">
+        <toc-element topic="DecodersConfigFile.md"/>
+        <toc-element topic="Frequency-Set-Spec.md"/>
+        <toc-element topic="BinMatrix-Spec.md"/>
+        <toc-element topic="TestPlan-Spec.md"/>
+        <toc-element topic="TP-Spec.md"/>
+        <toc-element topic="Search-Spec.md"/>
+    </toc-element>
+    <toc-element topic="Prime.md">
+        <toc-element topic="Proposal.md"/>
+    </toc-element>
+    <toc-element topic="Torch-Trace.md">
+        <toc-element topic="Module-Gen-Arch.md"/>
+    </toc-element>
 </instance-profile>

@@ -16,56 +16,60 @@
 ```mermaid
 sequenceDiagram
 
-    Note right of TestMethod: Verify @ **INIT** 
-    TestMethod -->> TestMethod: +Parse input Params()
-    TestMethod -->> TestMethod: +read and parse all relevant config files()
-    TestMethod -->> TestMethod: +Build SearchSpec Per TargetGroup()
-    TestMethod -->> VoltageService: +init() 
-    VoltageService -> TestMethod: Done.
-    TestMethod -->> FrequencyService: init() 
-    TestMethod -->> CTTService: init() 
-    TestMethod -->> PatModService: init() 
-    TestMethod -->> MiscService: init() 
-    TestMethod -->> RecoveryService: init() 
-    
+    Note right of TestMethod: Verify @ INIT
+    TestMethod ->> TestMethodParser: +Parse(this)
+    TestMethodParser -->> TestMethod: List<TargetsSearchSpec>
+    TestMethod ->> VminSearchDirector: +init()
+    VminSearchDirector ->> TestPointsRangeMgr: +init()
+    TestPointsRangeMgr -->> VminSearchDirector: Done.
+    VminSearchDirector --> TestMethod: Done.
+    VminSearchDirector ->> VminSearchDirector: Execute Handlers init()
+
+  
     Note right of TestMethod: Pre-Execute    
-    Note right of VoltageService: StepSize,...    
-    TestMethod -->> VoltageService: Initialize Voltage Object per sku()
-    TestMethod -->> FrequencyService: Initialize Frequency per corner per spec()
-    TestMethod -->> DecodersService: Initialize Decoders()
-    TestMethod -->> CttService: setDefaultPlistOptionsAndStartPattern()
-    TestMethod -->> RecoveryService: Apply any upstream recovery()
+    Note over TestMethod,VminSearchDirector: Pre Execute and get Prepared for Sku based configurations
+    TestMethod ->> +VminSearchDirector: PreExecute()
+    VminSearchDirector ->> TestPointsRangeMgr: ResolveTestingPoints()
+    TestPointsRangeMgr ->> VminSearchDirector: Done.
+    VminSearchDirector ->> VminSearchDirector: Execute Handlers Registered for Pre-Execute()
+    VminSearchDirector -->> TestMethod: Services Init by Skew is Done.
     
-    Note right of TestMethod: Pre-Point
-    TestMethod -->> VoltageService: resolveVotlagesAndApply()
-
-    Note right of TestMethod: Post-Point
-    TestMethod -->> DecodersService: GetExecutionStatus()
-    DecodersService -->> TestMethod: Pass/Fail()
-
-    Note right of TestMethod: relevant for both CTT Bundles and Serial Lists with ATomic patterns 
-    TestMethod -->> CttService: HandleStartPatternTargetTicksAndPlistAndUpdateStepSize()
-
-    Note right of TestMethod: Post-Execute
+    loop While Vmin is not Concluded
+        Note over TestMethod,VminSearchDirector: Pre Point - Prepare Services for SinglePoint Execution
+        VminSearchDirector ->> TestPointsRangeMgr: GetTestingPoint()
+        TestPointsRangeMgr ->> VminSearchDirector: MinVoltage=X, MaxVoltage=Y, Pass=X()
+        VminSearchDirector ->> VminSearchDirector: UpdateSinglePointContext()
+        VminSearchDirector ->> VminSearchDirector: Execute Handlers Registered for Pre-Point()
+        VminSearchDirector -->> TestMethod: All Set - Single-Point Test Can be Executed.
     
-    TestMethod -->> TestMethod: POINT_EXECUTE()
-    TestMethod -->> CVminSearch: ApplyPreSearchSetup()
-    TestMethod -->> CVminSearch: GetStartVoltageValues()
-    TestMethod -->> CVminSearch: GetLowerStartVoltageValues()
-    TestMethod -->> CVminSearch: GetEndVoltageLimitValues()
-    TestMethod -->> TestMethod: Execute()
-    TestMethod -->> CVminSearch: ProcessPlistResults()
-    TestMethod -->> CVminSearch: HasToContinueToNextSearch()
-    
-    Note right of TestMethod: Search Completed
-    TestMethod -->> CVminSearch: PostProcessSearchResults()
-    TestMethod -->> CVminSearch: ExecuteScoreboard()
-    TestMethod -->> CVminSearch: HasToRepeatSearch()
-    Note right of CVminSearch: iterate over all handlers and Init each
-    HandlersMgr -->> CVminSearch: Done.
-    CVminSearch -->> TestMethod: Done.
-    
+        Note over TestMethod,VminSearchDirector: Exec-Point - Execute FunctonalTest/SinglePoint on PreDefined Settings.
+        TestMethod ->> TestMethod: Execute Single Point()
+        Note over TestMethod,VminSearchDirector: Post-Point - Process Single-point result and act accordingly}
+        TestMethod ->> VminSearchDirector: Analyze SinglePoint Execution and Advice Pass/Fail
+        alt Plist Passed
+            Note over TestMethod,VminSearchDirector: Single Point test passed at given Voltage & Frequency
+            VminSearchDirector->>TestMethod: Pass - Exit VminSearch Loop.
+        else Plist Failed
+            Note over TestMethod,VminSearchDirector: Single Point test failed at given Voltage & Frequency, prepare to move for next point if any.
+            VminSearchDirector->>TestMethod: Fail - need to move for the next point
+            TestMethod ->> VminSearchDirector: HasNextPoint()
+            VminSearchDirector ->> TestPointsRangeMgr: HasNextPoint()
+            alt Yes - More Points To BE executed
+                TestPointsRangeMgr -->>VminSearchDirector: Yes.
+                VminSearchDirector ->> TestPointsRangeMgr: MoveForNextPoint()
+                VminSearchDirector -->> TestMethod: All Set - StartPattern, TargetsToBeTicked, StepSize,etc... You Can Proceed.
+            else No - No More points are available
+                TestPointsRangeMgr -->>VminSearchDirector: No.
+                VminSearchDirector -->> TestMethod: Terminate()
+            end
+        end
+    end
+    Note over TestMethod,VminSearchDirector: Post-Execute - Perform Search Finalization and Report Results.
+    TestMethod ->> VminSearchDirector: Execute Handlers Registered for Post-Execute()
+    TestMethod ->> TestMethod: Terminate()
 ```
+
+
 
 ```plantuml
 @startuml
@@ -83,23 +87,30 @@ namespace cgen.interfaces #DDDDDD {
         Search() : void
     }
     
-    interface ISearchExecuter {
-        Execute() : void
+    interface ISearchDirector {
+        Init()
+        PreExecute()
+        PrePoint()
+        PostPoint()
+        PostExecute()
+        Finalize()
     }
     
+    interface IPreExecute {
+         ExecutePreExecute() : ExecResult
+    }
     interface IPrePoint {
          ExecutePrePoint() : ExecResult
     }
     interface IPostPoint {
         ExecutePostPoint() : ExecResult
     }
-    
-    interface IHandler {
-        Handle() : 
+    interface IPostExecute {
+        ExecutePostPoint() : ExecResult
     }
-
-
+    
 }
+
 namespace cgen.enums #DDFFFF {
      enum Socket {
         CLASS, PHM
@@ -117,10 +128,13 @@ class Context {
 }
 
 class ExecResult {
-    status : Pass/Fail
+    status : PassFail
     error : String
 }
 
+enum PassFail {
+    Pass, Fail
+}
 
 ISearchExecuter *-- IHandler
 

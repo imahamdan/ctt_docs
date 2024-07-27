@@ -30,4 +30,12 @@
         <description>Created after removal of "Examples" from CTT_AUTOGEN</description>
         <accepts>Examples.html</accepts>
     </rule>
+    <rule id="411d9246">
+        <description>Created after removal of "Bin Matrix Spec" from ConvergedVminSearch</description>
+        <accepts>Bin-Matrix-Spec.html</accepts>
+    </rule>
+    <rule id="40ecad98">
+        <description><![CDATA[Created after removal of "<SequenceDraft.md>" from SANDBOX]]></description>
+        <accepts>SequenceDraft.html</accepts>
+    </rule>
 </rules>
