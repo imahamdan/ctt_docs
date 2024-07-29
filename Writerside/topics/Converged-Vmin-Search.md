@@ -1,17 +1,120 @@
 
 # Converged VminSearch template
 
-So What? what we get by the test-blend atrch
-1. standalone & dependecy free
-2. same PRE for both SRH & CHK
-3. maintence and sustain --> what ever goes to chk/srh goes for both
-4. the combination of search & check into a single test-blend will enable the check if a specefic freq already executed and give the ability to skip it and avoid redundent re-testing
-5. Ctt ready, to run a test-blend without any knowledge or PATMOD handling
+## Vmin Search Current Features
+| Feature                              | SupportedToday? | Recommendation | Description                                                                                           |
+|--------------------------------------|-----------------|----------------|-------------------------------------------------------------------------------------------------------|
+| Multipass                            | Y               | Required       | repeat same testing on different set of IPs with relevant masking                                     |
+| Scoreboarding                        | Y               | Fork           | execute plist at specific voltage and collect failing patterns ids                                    |
+| VBUMP        (Done)                  | N               | Required       | set the power-domain at high voltage to workaround reset failures                                     |
+| Prediction & OverShoot (Done)        | Y               | Make Global    | start testing at predicted Vmin, incase of first-pass rerun vmin-search starting from overshoot value |
+| Vmin Forwarding    (Done)            | Y               | Required       | store & forward the vmin located at current testing conditions                                        |
+| Various Voltage Types Support (Done) | N               | Required       | handle different voltage targets types, such as DPS, DLVR or both at the samew test-instance          |
+| Search Point Expression (Done)       | N               | Required       | set testing VMIN to a new value and report fwed value incase of pass                                  |
+| Fail Decoders (Done)                 | N               | Required       | read/analyze execution results and report pass/fail and ticking required list                         |
+| Cold/CSM Support                     | N               | Required       | support cold & csm sockets where forwarding is not allowed and more constraints are available as well |
+| Vmin Export to SharedMemory          | N               | Required       | save the vmin-result to the shared memory with some GB                                                |
+| integrated PATMods for Freq (Done)   | N               | Required       | handling feature enabiling/disabiling inside the test instance for dependency free testingt           |
+| ITuff & Trace Logging                | N               | Required       | export & log vmin-search results to ituff for TRACE & other tools reports                             |
+| Sku Special handling  (?)            | N               | Required       | different handling of vmin-search based on active sku per unit                                        |
+| Recovery                             | N               | Required       | based on testing results, perform recovery on selected domains                                        |
+| CTT                                  | N               | Required       | multi-domain parallel search and special start pattern & ticking handling                             |
+| Termination                          | N               | Required       | terminate test-execution incase of #ticks > #threshold                                                |
+| Vmin Export & Interpolation          | N               | Fork           | handle Vmin-Results export for UPS include interpolation                                              |
 
-New Features:
+## Current VminSearch Calls And Loops
+```mermaid
+sequenceDiagram
+  TestMethodBase -->> TestMethodBase: Parse input Params()
+  TestMethodBase -->> TestMethodBase: Build SearchSpec Per Target()
+  note over TestMethodBase,VminSearch: Verify Extensions Methods
+  TestMethodBase -->> VminSearch: GetSearchVoltageObject()
+  TestMethodBase -->> VminSearch: GetFunctionalTest()
+  TestMethodBase -->> VminSearch: IsSinglePointMode()
+  TestMethodBase -->> VminSearch: IsCheckOfResultBitsEnabled()
+  VminSearch -->> TestMethodBase: Done.
+
+  loop Loop On Multipass
+    note over TestMethodBase,VminSearch: PRE-Execute - done once before iterating on range of voltages
+    TestMethodBase -->> VminSearch: GetBypassPort()
+    TestMethodBase -->> VminSearch: GetInitialMaskBits()
+    TestMethodBase -->> VminSearch: ApplyPreExecuteSetup()
+    TestMethodBase -->> VminSearch: ApplyInitialVoltage()
+    TestMethodBase -->> VminSearch: ApplySearchVoltage()
+    TestMethodBase -->> VminSearch: ApplyMask()
+
+    loop Loop Over Search Points
+      note over TestMethodBase,VminSearch: To Be Executed Before Each Point
+      TestMethodBase -->> VminSearch: ApplyPreSearchSetup()
+      TestMethodBase -->> VminSearch: GetStartVoltageValues()
+      TestMethodBase -->> VminSearch: GetEndVoltageLimitValues()
+
+      note over TestMethodBase,VminSearch: Actual Point Execution
+      TestMethodBase -->> TestMethodBase: Execute()
+
+      note over TestMethodBase,VminSearch: Post Point Execution
+
+      TestMethodBase -->> VminSearch: ProcessPlistResults()
+      TestMethodBase -->> VminSearch: HasToContinueToNextSearch()
+    end
+    note over TestMethodBase,VminSearch: Search Completed - Post Processing
+    TestMethodBase -->> VminSearch: PostProcessSearchResults()
+    TestMethodBase -->> VminSearch: ExecuteScoreboard()
+    TestMethodBase -->> VminSearch: HasToRepeatSearch()
+  end
+  VminSearch -->> TestMethodBase: Done.
+
+```
+
+## High Level Arch
+For a product agnostic design, we will move the VminSearch module managment into a new code "VminSearchDirector"
+and develop a bridge supporting different PRIME versions
+```mermaid
+graph LR
+    
+    DIRECTOR["Vmin-Search Director"] <---> SERVICE-A ---->PRIME_SERVICES
+    DIRECTOR["Vmin-Search Director"] <---> SERVICE-B ---->PRIME_SERVICES
+    DIRECTOR["Vmin-Search Director"] <---> SERVICE-C ---->PRIME_SERVICES
+    
+    PRIME12["TEST-METHOD"] <--> DIRECTOR
+    PRIME <--> PRIME12
+    PRIME <--> PRIME_SERVICES
+       
+```
+## Features consolidation into services
+```plantuml
+@startmindmap
+* Vmin-Search Director
+    * VoltageService
+        * Initial Voltages
+        * Vmin Forwarding
+        * Vbump Handling
+        * Prediction & OverShoot handling
+        * Search Point Expression
+    * FrequencyService
+        * PatModService
+    * Decoding Service
+        * CTT Decoder
+        * LOG1 Decoder
+        * CTV Decoder
+    * Recovery Service
+    * Reporting Service
+    * Search Range Manager
+        * Multipass
+        * Freq Shmoo
+        * Valid Recovery Options
+        * Termination
+    * Socket & Skew Service
+        * SKU Settings Manager
+        * Socket Settings Manager
+@endmindmap
+```
+
+
+## New Features:
 1. add a tag parameter for each test-instance to ease the bypass/unpass procedure
 
-## Features:
+## Features in details:
 ### Multipass
 The input parameter is list of bitArray (each bit represents a core) --> the order of cores defined in VoltageVminForwading
 **Recommendation:** for CTT Based TP --> we will flatten the Multipass to enable bundle per pass.
@@ -93,26 +196,6 @@ need to enforce that SEARches will use a different corner for observability and 
 PRIME: use a more abstract way for cores names and not by bit position
 
 
-| Feature                              | SupportedToday? | Recommendation | Description                                                                                           |
-|--------------------------------------|-----------------|----------------|-------------------------------------------------------------------------------------------------------|
-| Multipass                            | Y               | Required       | repeat same testing on different set of IPs with relevant masking                                     |
-| Scoreboarding                        | Y               | Fork           | execute plist at specific voltage and collect failing patterns ids                                    |
-| VBUMP        (Done)                  | N               | Required       | set the power-domain at high voltage to workaround reset failures                                     |
-| Prediction & OverShoot (Done)        | Y               | Drop           | start testing at predicted Vmin, incase of first-pass rerun vmin-search starting from overshoot value |
-| Vmin Forwarding    (Done)            | Y               | Required       | store & forward the vmin located at current testing conditions                                        |
-| Various Voltage Types Support (Done) | N               | Required       | handle different voltage targets types, such as DPS, DLVR or both at the samew test-instance          |
-| Search Point Expression (Done)       | N               | Required       | set testing VMIN to a new value and report fwed value incase of pass                                  |
-| Fail Decoders (Done)                 | N               | Required       | read/analyze execution results and report pass/fail and ticking required list                         |
-| Cold/CSM Support                     | N               | Required       | support cold & csm sockets where forwarding is not allowed and more constraints are available as well |
-| Vmin Export to SharedMemory          | N               | Required       | save the vmin-result to the shared memory with some GB                                                |
-| integrated PATMods for Freq (Done)   | N               | Required       | handling feature enabiling/disabiling inside the test instance for dependency free testingt           |
-| ITuff & Trace Logging                | N               | Required       | export & log vmin-search results to ituff for TRACE & other tools reports                             |
-| Sku Special handling  (?)            | N               | Required       | different handling of vmin-search based on active sku per unit                                        |
-| Recovery                             | N               | Required       | based on testing results, perform recovery on selected domains                                        |
-| CTT                                  | N               | Required       | multi-domain parallel search and special start pattern & ticking handling                             |
-| Termination                          | N               | Required       | terminate test-execution incase of #ticks > #threshold                                                |
-| Vmin Export & Intrpolation           | N               | Fork           | handle Vmin-Results export for UPS include interpolation                                              |
-
 ## System interesting strenths
 1. the ability to order the test-blends based on si data and for free with risk free.
 
@@ -126,23 +209,22 @@ PRIME: use a more abstract way for cores names and not by bit position
 * On-Boarding & Configuration files manager
 * How Freedy implemented DTS ? Ahmad to check
 * Apply Mask is TestMethod -->> CVminSearch: ApplyMask()
-* Change REcovery to Yield Recovery
+* Change Recovery to Yield Recovery
 * SwitchAdjustemnt:
-    * unit failed flow1->flow2 --> a calculation for startV (DF/DV) (StartVoltage need to be lower since hte Freq)
-    * need to "lower" the Flow at previous corners as well and
-    * today there is a limit that we cannot referecnce
+  * unit failed flow1->flow2 --> a calculation for startV (DF/DV) (StartVoltage need to be lower since hte Freq)
+  * need to "lower" the Flow at previous corners as well and
+  * today there is a limit that we cannot referecnce
 
 
-# YBD
+# YBS
 1. supply VBUMP info
 2. supply prediction Test2Spec
 3. supply start voltage & end volrage
 4. PerSku
 
-# Checkers
-1. VBUMP Checker to validate the VBUMP is well defined (ALEX)
-2. PATMOD SetPoints conventions checker --> to validate all setpoints follow the future agreed convention -- AR Kochav
-
+# Checkers for SMART-TP
+1. VBUMP Checker to validate the VBUMP is well defined at instance & plist (ALEX)
+2. PATMOD SetPoints conventions checker --> to validate all endpoints follow the future agreed convention -- AR Kochav
 
 # Prime Tickets
 1. StepSize Control

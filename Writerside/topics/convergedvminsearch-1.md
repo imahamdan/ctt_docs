@@ -1,65 +1,81 @@
 # Introduction and Architecture
 
-# Ultimate Goals
-1. TestProgram Simplicity, efficent and Dependency free design
-2. Converged, Scalable and generic VminSearch template with CTT native support
+## Ultimate Goals
+1. TestProgram and Speed flow Simplicity and Dependency free design
+2. Converged, Scalable and Generic Vmin-Search template with CTT native support
 3. PDE Productivity enhancements, up-level tp abstraction, automations and assistive technologies
 
+## Problem Statement
+1. Complex vmin-search template/test-method implementation with dozens of features
+2. high count of input parameters and configurations with internal dependency
+3. Diverged NonCtt & CTT VminSearch templates implementation 
+4. No Code Sharing between products in same Org or outside the org
+5. Limited Unit tests and low coverage, lack of modules/services standalone testing and integration testing
+6. heavy reliance on Si-results for code & module validity 
+7. Manual test-program module crafting and sustain processes.
+8. Lack of coding methodologies and quality assurance 
 
-# Problem Statment
-1. Complex VminSearch Template and includes a lot of built-in features
-2. dozens of input parameters
-3. Diverged CTT VminSearch and Redo
-4. No Code Sharing between proucts in same Org or outside of Org
-5. No Unit tests and Coverage
-6. Manual modules crafting and maintenance process
-
-
-# High Level Arch
+## High Level Arch
 the Dependency term means that each test-instance should include all required settings and the acutal test-templates to perform the testing, 
-in order to fullfill this request and based on existing building blocks in current testing echo-system, we are proposing building a test-composite/test-blend that 
+in order to fullfill this request and based on existing building blocks in current testing echo-system, we are proposing building a test-composite/test-unit that 
 will include test-instances of search to bring the Vmin to a working point before the check is being executed, as well as, will be place holders for user-defined instances 
 that is required for a valid testing or any further actions later in the test-program stream.
 
-we will use the term "**test-blend**": a group of test-instances required to perform testing of an ip or more at a specefic frequency.
+we will use the term "**test-unit**": a group of test-instances required to perform testing of an ip or more at a specefic frequency.
 
-# Current TP Architicture
-* test program built from a predefined flow of test-composites
-* each composite include other test-composites for a specific IP
-* each IP test-composite include other test-composities per frequency corner
-* each Frequency corner include test-instances performing actual testing as well as control instances to set a PATMOD, update corner and other instrumental actions.
+## Current TP Architecture
+* Current Test program built from a predefined flow of test-composites
+* Each composite include other test-composites for a specific IP
+* Each IP test-composite include other test-composites per frequency corner
+* Each Frequency corner include test-instances performing actual testing as well as control instances to set a PATMOD, update corner and other instrumental actions.
 
-below you can find an illustration on the hierarches and the structure of the current TP Flow:
+Below you can find an illustration on the hierarchies and the structure of the current TP Flow:
 ```mermaid
 graph LR
-  T10["START"] --> T0["..."] --> T1["PRE"] --> T2["SEARCH"] --> T3["CHECK"] --> T4["POST"] --> TN["..."]--> TE["END"]
+    T10["START"] --> T0["..."] --> T1["PRE"] --> T2["SEARCH"] --> T3["CHECK"]-->T4["POST"] --> TN["..."]--> TE["END"]
+
+```
+
+Going one Level Deeper:
+```mermaid
+graph LR
+  T10["START"] --> T0["..."] --> T1["PRE"] --> T2["SEARCH"] 
   T2 --> IP-A 
-  IP-A --> FA1["F1"] --> FA2["F2"] --> FA3["F3"]
+  IP-A --> FA1["F1"] --> FA2[".."] --> FA3["F10"]
   FA2 --> FA2
   FA3 --> FA3
-  FA1 --> PLIST1 --> PLIST2 --> PLIST3 --> FA1
-  IP-B --> FB1["F1"] --> FB2["F2"] --> FB3["F3"] --> T2
+  FA1 --> FA1
+  IP-B --> FB1["F1"] --> FB2[".."] --> FB3["F8"]
   FB1 --> FB1
   FB2 --> FB2
   FB3 --> FB3
   FA3 --> IP-B
-  
+  FB3 --> T3["CHECK"]
+  T3 --> CIP["IP-A"]
+  CIP-->CF1["F1"]
+  CF1 --> CF1
+  CF1 --> CF2[".."]
+  CF2 -->CF2
+  CF2 --> T4["POST"] --> TN["..."]--> TE["END"]
 ```
+And in more detailed View:
+## Reminder to Current TP Flow arch
+![current_tp_flow.png](current_tp_flow.png)
 
-# Future TP Flow Architecture
-we are proposing 3 major changes to the test-program architecture
-1. consolidate the SEARCH and CHECK test-composites
-2. Flatten BinMatrix and design the system in SKU based design
-3. use Test-Blends instead of test-instance as test leaves
+## Future TP Flow Architecture Guidelines
+We are proposing 3 major changes to the test-program architecture
+1. Consolidate the SEARCH and CHECK test-composites into a single test-block
+2. Flatten BinMatrix and design a SKU based system
+3. Group test-instances and the required dependencies into a single testing block
 
 ## Test Program Flow
 
 ```mermaid
 graph LR
-  T10["START"] --> T0["..."] --> T1["PRE"] --> T2["CLASSIFY"] --> T4["POST"] --> TN["..."]--> TE["END"]
+  T10["START"] --> T0["..."] --> T1["PRE"] --> T2["SPEED"] --> T4["POST"] --> TN["..."]--> TE["END"]
 ```
 
-**"CLASSIFY"** is a test composite that will include a new flows of test-composites as follows:
+**"SPEED"** is a test composite that will include a new flows of test-composites as follows:
 
 ```mermaid
 graph LR
@@ -70,33 +86,33 @@ graph LR
 ```
 
 * SKU Selector - is an entity that we will develop to select the relevant SKU based on the units params and DFF data from previous sockets
-* each SKU will include list of IPs & test-blends or bundles incase of CTT.
+* each SKU will include list of IPs & test-units or bundles incase of CTT.
 
 ### SKU Design illustration
-each SKU will consist test-blends based on YBS SKU spec definition. 
+each SKU will consist test-units based on YBS SKU spec definition. 
 
 ```mermaid
 graph LR
-    T1["Test-Blend #1"] --> T2["Test-Blend #2"] --> T3["Test-Blend #3"] --> T4["..."] --> TN["Test-Blend #N"]
+    T1["Test-unit #1"] --> T2["Test-unit #2"] --> T3["Test-unit #3"] --> T4["..."] --> TN["Test-unit #N"]
 ```
 Example:
 ```mermaid
 graph LR
-    T1["saq_f1_mbist_list"] --> T2["core_f1_mbist_list"] --> T3["core_f1_scan_list"] --> T4["..."] --> TN["atom_f1_sbft_list"]
+    T1["saq_f1_mbist_lsa_list"] --> T2["core_f1_mbist_lsa_list"] --> T3["core_f1_scan_s@_list"] --> T4["..."] --> TN["atom_f1_sbft_list"]
 ```
 
-Now we would like to define what is a "test-blend" and what it includes.
+Now we would like to define what is a "test-unit" and what it includes.
 will start from a definition:
 
-**Test-Blend Def** : a group of composites/test-instances grouped in a single composite achieving a full isolated/standalone testing for
+**Test-unit Def** : a group of composites/test-instances grouped in a single composite achieving a full isolated/standalone testing for
 a specific IP/FREQ.
 
-**Test-Blend internal Structure:**
+**Test-unit internal Structure:**
 ```mermaid 
 graph LR
     PRE["User Defined - PRE"] --> SRH["Search Composite"] --> MID["User Defined - Mid"] -->  CHK["Check Composite"] --> POST["User Defined - Post"] 
 ```
-above is a super-set of a test-blend, based on TP flows and requirements several options are available and will be mostly common
+above is a super-set of a test-unit, based on TP flows and requirements several options are available and will be mostly common
 
 | Option | PRE | SRH | MID | CHK | POST |                                      DESC                                       |
 |--------|:---:|:---:|:---:|:---:|:----:|:-------------------------------------------------------------------------------:|
@@ -123,16 +139,16 @@ examples:
 a place holder to perform the search or the prediction - a cheaper test bringing the Vmin to a working zone to decrease full check test to tick
 there are few possible combinations:
 
-| Option | Search | Predict |  Recovery  | ReTest |
-|--------|:------:|:-------:|:----------:|:------:|
-| #1     |   X    |         |            |        |
-| #2     |        |    X    |            |        |
-| #3     |   X    |         |     X      |        |
-| #4     |   X    |         |     X      |   X    |
+| Option | Search | Predict | Yield-Recovery | ReTest |
+|--------|:------:|:-------:|:--------------:|:------:|
+| #1     |   X    |         |                |        |
+| #2     |        |    X    |                |        |
+| #3     |   X    |         |       X        |        |
+| #4     |   X    |         |       X        |   X    |
 
 
 
-#### Predict/VminSearch with No Recovery
+#### Predict/VminSearch with No Yield-Recovery
 based on the SKU definition and the data per IP/Freq, autogen will place the relevant test-template (Search/Predict), incase of a pass the flow will progress to the next composite,
 incase of a failure testing will stop and the associated Bin will be reported.
 
@@ -145,16 +161,16 @@ graph LR
     ISPASS -- No --> FAIL["Fail & Report Bin"]
 ```
 
-#### Predict/VminSearch With Recovery and Retest
+#### VminSearch With Yield-Recovery and No-Retest
 for low-yield products, the recovery is a must-have feature, therefore, a recovery flow must be well-defined and places incase of Search failures
 
 in High Level
 ```mermaid
 graph LR
-    SRH_OR_PREDICT -- FAIL --> RECOVERY
+    SRH_OR_PREDICT -- FAIL --> YLD-RECOVERY
     SRH_OR_PREDICT -- PASS --> MOVE_NEXT
-    RECOVERY -- PASS -->  MOVE_NEXT
-    RECOVERY -- FAIL --> BIN["Fail & Report Bin"]
+    YLD-RECOVERY -- PASS -->  MOVE_NEXT
+    YLD-RECOVERY -- FAIL --> BIN["Fail & Report Bin"]
 ```
 in more Low Level diagram including Retest:
 
@@ -164,7 +180,7 @@ graph LR
     MODE -- SRH --> SRH["Execute Search"] --> ISPASS["Is Passed?"]
     MODE -- PREDICT --> PREDICT --> MOVE_NEXT
     ISPASS -- Yes --> MOVE_NEXT
-    ISPASS -- No --> RECOVERY["Perform Recovery"]
+    ISPASS -- No --> RECOVERY["Perform Yield Recovery"]
     RECOVERY --> ISRETEST["Retest?"]
     ISRETEST -- No --> MOVE_NEXT
     ISRETEST -- Yes --> RETEST["Re-test With Recovery"] --> ISPASSREC["Is Passed?"]
@@ -181,7 +197,7 @@ the check is the main component and will include 3 test-instances
 in High Level
 ```mermaid
 graph LR
-    VMIN_SEARCH  -- FAIL --> RECOVERY["Recovery & Retest"]
+    VMIN_SEARCH  -- FAIL --> RECOVERY["Yield-Recovery & Retest"]
     VMIN_SEARCH -- PASS --> MOVE_NEXT
     RECOVERY -- PASS -->  MOVE_NEXT
     RECOVERY -- FAIL --> BIN["Fail & Report Bin"]
@@ -203,5 +219,5 @@ graph LR
 1. standalone & dependency free testing
 2. same PRE for both SRH & CHK
 3. maintenance and sustain --> what ever goes to chk/srh goes for both
-4. the combination of search & check into a single test-blend will prevent testing same corner and waste testtime
-5. Ctt ready, to run a test-blend without any knowledge or PATMOD handling 
+4. the combination of search & check into a single test-unit will prevent testing same corner and waste testtime
+5. Ctt ready, to run a test-unit without any knowledge or PATMOD handling 

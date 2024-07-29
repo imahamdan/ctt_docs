@@ -12,7 +12,7 @@
 # Decoders Architecture
 
 
-# how hte Decoder is being selected?
+# how the Decoder is being selected?
 1. InstanceParameter
    2. FailDecoderName = "LOG1_DECODER"
    3. FailDecoderArgs = "11110000"
